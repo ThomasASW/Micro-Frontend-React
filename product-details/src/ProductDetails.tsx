@@ -8,14 +8,33 @@ export const ProductDetails = () => {
     const { id } = useParams();
 
     const [product, setProduct] = useState<Product>();
+    const [addToCartSuccess, setAddToCartSuccess] = useState(false);
 
     const url = "http://localhost:5000/api/products/"
+    const cartUrl = "http://localhost:5000/api/cart"
 
     const getProductDetails = async () => {
         const res = await fetch(`${url}${id}`)
         const body = await res.json();
         console.log(body);
         setProduct(body);
+    }
+
+    const addToCart = async () => {
+        const res = await fetch(cartUrl,
+            {
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: product?._id })
+            }
+        );
+        const body = await res.json();
+        console.log(body);
+        if (body.acknowledged) {
+            setAddToCartSuccess(true);
+        }
     }
 
     useEffect(() => {
@@ -44,7 +63,7 @@ export const ProductDetails = () => {
                 <h2>{product?.brand}</h2>
                 <h3>{product?.description}</h3>
                 <h4>{`Rs. ${product?.price}`}</h4>
-                <Button type='primary'>Add to cart</Button>
+                <Button type='primary' onClick={addToCart} disabled={addToCartSuccess}>{addToCartSuccess ? "Added to cart" : "Add to cart"}</Button>
             </Card.Grid>
         </Card>
     )
