@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { Product } from './models/Product'
-import { Card, Flex, Pagination, PaginationProps } from 'antd'
-import Meta from 'antd/es/card/Meta'
+import { Button, Card, Flex, Pagination, PaginationProps, Radio, RadioChangeEvent } from 'antd'
+import { SortAscendingOutlined, SortDescendingOutlined, ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 
 const ProductListing = () => {
 
@@ -12,28 +12,27 @@ const ProductListing = () => {
 
     const [page, setPage] = useState(0)
     const [total, setTotal] = useState(0)
-
-    const [nextId, setNextId] = useState("")
+    const [sortField, setSortField] = useState("title")
+    const [sortDirection, setSortDirection] = useState("1")
 
     const url = "http://localhost:5000/api/products"
 
     const getProducts = async () => {
         const params = new URLSearchParams();
-        if (page != 0) {
-            params.append("id", nextId);
-        }
+        params.append("skip", `${(page * 10)}`);
         params.append("limit", "10");
+        params.append("sort", sortField);
+        params.append("direction", sortDirection);
         const res = await fetch(`${url}?${params.toString()}`);
         const body = await res.json();
         console.log(body);
         setProducts(body.products)
         setTotal(body.total)
-        setNextId(body.products[9]._id)
     }
 
     useEffect(() => {
         getProducts();
-    }, [page])
+    }, [page, sortDirection, sortField])
 
     const pageChange: PaginationProps['onChange'] = (page) => {
         setPage(page - 1);
@@ -43,8 +42,26 @@ const ProductListing = () => {
         navigate(`/product/${id}`)
     }
 
+    const changeSortField = (e: RadioChangeEvent) => {
+        setSortField(e.target.value);
+    }
+
+    const changeSortDirection = (e: RadioChangeEvent) => {
+        setSortDirection(e.target.value);
+    }
+
     return (
         <div>
+            <div style={{ width: "100%", padding: "10px" }}>
+                <Radio.Group onChange={changeSortField} value={sortField}>
+                    <Radio value="title">Name</Radio>
+                    <Radio value="price">Price</Radio>
+                </Radio.Group>
+                <Radio.Group onChange={changeSortDirection} value={sortDirection}>
+                    <Radio value="1">Ascending</Radio>
+                    <Radio value="-1">Descending</Radio>
+                </Radio.Group>
+            </div>
             <Flex wrap="wrap" gap={15} style={{ width: "100%", paddingTop: "10px" }} justify='space-evenly'>
                 {products.map((product) => {
                     return (
