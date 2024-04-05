@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { Product } from './models/Product'
-import { Button, Card, Flex, Pagination, PaginationProps, Radio, RadioChangeEvent } from 'antd'
-import { SortAscendingOutlined, SortDescendingOutlined, ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { Card, Flex, Pagination, PaginationProps, Radio, RadioChangeEvent } from 'antd'
 
 const ProductListing = () => {
 
