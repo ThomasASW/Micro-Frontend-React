@@ -5,6 +5,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './index.css'
 import ProductListing from './ProductListing';
 import { ProductDetails } from "product_details/ProductDetails";
+import { Cart } from "cart/Cart";
+import { Checkout } from "checkout/Checkout";
 import Navbar from './Navbar';
 
 const App = () => (
@@ -14,6 +16,8 @@ const App = () => (
       <Routes>
         <Route path='/' element={<ProductListing />}></Route>
         <Route path='/product/:id' element={<ProductDetails />}></Route>
+        <Route path='/cart' element={<Cart />}></Route>
+        <Route path='/checkout' element={<Checkout />}></Route>
       </Routes>
     </BrowserRouter>
   </>
